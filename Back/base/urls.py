@@ -16,6 +16,7 @@ urlpatterns = [
      path('members',views.test_members),
      path('buy_car',views.buy_car), 
      path('get_my_cars',views.get_my_cars), 
+     path('get_my_cars/<id>',views.get_my_cars), 
 
 
 ]

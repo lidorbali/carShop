@@ -52,21 +52,28 @@ def buy_car(request):
     return JsonResponse({'test':'done'}, safe=False)
 
 
-@api_view(['GET'])
+@api_view(['GET','DELETE'])
 @permission_classes([IsAuthenticated])
 def get_my_cars(request):
+    
     user = request.user
     print(user.car_set.all())
+    if request.method == "GET":
+        res=[] #create an empty list
+        for car in user.car_set.all(): #run on every row in the table...
+         res.append({
+            "company":car.company,
+            "desc":car.desc,
+            "price":car.price,
+            "id":car._id}) #append row by to row to res list
+        return JsonResponse(res,safe=False) #return array as json response
     
-    res=[] #create an empty list
-    for car in user.car_set.all(): #run on every row in the table...
-        res.append({
-        "company":car.company,
-        "desc":car.desc,
-        "price":car.price,
-        "id":car._id}) #append row by to row to res list
-    return JsonResponse(res,safe=False) #return array as json response
+    if request.method == 'DELETE': #method delete a row
+            Car.objects.get(_id=id).delete()
+            return JsonResponse({'DELETE': id})
 
+        
+    
 
 ###  register --> login --> test (members only validtion) --> buy_car --> get_my_cars
     # user =models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
