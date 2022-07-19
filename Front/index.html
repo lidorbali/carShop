@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <title>Document</title>
+  </head>
+  <script>
+    const MY_SERVER = "http://127.0.0.1:8000/";
+
+    const test = async () => {
+      let res = await axios(MY_SERVER);
+      console.log(res.data);
+    };
+    const login = async () => {
+      myData = {
+        username: username.value,
+        password: password.value,
+      };
+      let res = await axios.post(MY_SERVER + "login", myData);
+      console.log(res.data);
+      localStorage.setItem("token", res.data.access); // SAVE MY TOKEN
+    };
+
+    const buy = async () => {
+        const token = localStorage.getItem("token"); // USE THE TOKEN 
+        const myData = {
+            desc: desc.value,
+            company: company.value,
+            price: price.value,
+        };
+         let res = await axios.post(MY_SERVER + "buy_car", myData,  // POST AUTHORIZE CARS TO BUY 
+        { headers: {
+            Authorization: `Bearer ${token}`,
+             }, 
+        });
+        console.log(res.data.access);
+      };
+</script>
+
+  <body>
+    <button onclick="test()">test</button>
+
+    <hr />
+    <div>
+      username:<input id="username" type="text" value="lidorbal" /><br />
+      password: <input id="password" type="password" value="123" /><br />
+      <button onclick="login()">login</button>
+    </div>
+    <hr />
+    <div>
+      company:<input id="company" type="text" /><br />
+      desc: <input id="desc" type="text" /><br />
+      price: <input id="price" type="text" /><br />
+      <button onclick="buy()">buy</button>
+    </div>
+  </body>
+</html>

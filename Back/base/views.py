@@ -8,6 +8,10 @@ from rest_framework.permissions import IsAuthenticated
 from . models import Car
 # Create your views here.
 
+def index(requset):
+    return JsonResponse({"server":"alive"}, safe=False)
+
+
 #login
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -31,7 +35,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 #regiser
 @api_view(['POST'])
 def register (request):
-     User.objects.create_user(username=request.data['username'],password=request.data['password'])
+     User.objects.create_user(username=request.data['username'],password=request.data['password'],email=request.data['email'])
      return JsonResponse({'done':'test'}, safe=False)
 
 @api_view(['GET'])#cant use GET
@@ -39,7 +43,7 @@ def register (request):
 def test_members(request):
     return JsonResponse({'members':'only'})
 
-###  register --> login --> test (members only validtion)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def buy_car(request):
@@ -64,7 +68,7 @@ def get_my_cars(request):
     return JsonResponse(res,safe=False) #return array as json response
 
 
-
+###  register --> login --> test (members only validtion) --> buy_car --> get_my_cars
     # user =models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     # company=models.CharField(max_length=50,null=True,blank=True)
     # desc = models.CharField(max_length=50,null=True,blank=True)
