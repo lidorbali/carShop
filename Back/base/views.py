@@ -54,7 +54,7 @@ def buy_car(request):
 
 @api_view(['GET','DELETE'])
 @permission_classes([IsAuthenticated])
-def get_my_cars(request):
+def get_my_cars(request,id=-1):
     
     user = request.user
     print(user.car_set.all())

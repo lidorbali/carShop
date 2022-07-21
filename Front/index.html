@@ -26,20 +26,64 @@
     };
 
     const buy = async () => {
-        const token = localStorage.getItem("token"); // USE THE TOKEN 
-        const myData = {
-            desc: desc.value,
-            company: company.value,
-            price: price.value,
-        };
-         let res = await axios.post(MY_SERVER + "buy_car", myData,  // POST AUTHORIZE CARS TO BUY 
-        { headers: {
-            Authorization: `Bearer ${token}`,
-             }, 
-        });
-        console.log(res.data.access);
+      const token = localStorage.getItem("token"); // USE THE TOKEN
+      const myData = {
+        desc: desc.value,
+        company: company.value,
+        price: price.value,
       };
-</script>
+      let res = await axios.post(
+        MY_SERVER + "buy_car",
+        myData, // POST AUTHORIZE CARS TO BUY
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res.data.access);
+    };
+    const getCart = async () => {
+      const token = localStorage.getItem("token");
+      const cart = await axios(MY_SERVER + "get_my_cars", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(cart.data);
+      return cart.data;
+    };
+    const buildDisplay = async () => {
+      cart = await getCart();
+
+      mydisplay.innerHTML = cart
+        .map(
+          (car) => `<div> <h4>company: ${car.company} </h4>
+            <h4>model: ${car.desc}</h4>
+           <h4> price: ${car.price} </h4>
+           <button onclick="delData(${car.id})">delete</button>
+
+          </div>`
+        )
+
+        .join("<hr>");
+    };
+    const delData = async (id) => {
+      const token = localStorage.getItem("token");
+      const myData = {
+        id: id,
+      };
+      console.log(myData)
+      const cart = await axios.delete(
+        MY_SERVER + "get_my_cars/" + id,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    };
+  </script>
 
   <body>
     <button onclick="test()">test</button>
@@ -56,6 +100,8 @@
       desc: <input id="desc" type="text" /><br />
       price: <input id="price" type="text" /><br />
       <button onclick="buy()">buy</button>
+      <button onclick="buildDisplay()">My Cart</button>
     </div>
+    <div id="mydisplay"></div>
   </body>
 </html>
